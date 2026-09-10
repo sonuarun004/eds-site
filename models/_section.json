@@ -50,6 +50,9 @@
         "hero",
         "cards",
         "columns",
+        "columns-feature",
+        "cards-partner",
+        "accordion-faq",
         "fragment"
       ]
     }

@@ -1,4 +1,25 @@
 /* stylelint-disable max-line-length */
+
+/* BNP Paribas Fortis brand typeface (BNPPSans), sourced from the live site.
+   Regular is used for headings/UI; Light for body copy. */
+@font-face {
+  font-family: bnppsans;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/bnppsans-regular.woff') format('woff'),
+       local('BNPPSans');
+}
+
+@font-face {
+  font-family: bnppsans-light;
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../fonts/bnppsans-light.woff') format('woff'),
+       local('BNPPSansLight');
+}
+
 @font-face {
   font-family: roboto-condensed;
   font-style: normal;
