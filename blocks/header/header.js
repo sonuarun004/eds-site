@@ -103,8 +103,22 @@ function buildMainNav(section) {
     if (el.tagName === 'H3') return;
     if (el.tagName === 'H2') {
       const link = el.querySelector('a');
-      const label = link ? link.textContent.trim() : el.textContent.trim();
-      const href = link ? link.getAttribute('href') : '#';
+      // Some authoring pipelines emit the label as escaped anchor text, e.g.
+      // `<a href="/nl/public/private-banking">Private Banking</a>`. Recover both
+      // the clean label and its href from that text when there is no real <a>.
+      const rawText = el.textContent.trim();
+      const escapedAnchor = link ? null : rawText.match(/<a\b[^>]*\bhref="([^"]*)"[^>]*>(.*?)<\/a>/i);
+      let linkHref = null;
+      let rawLabel = rawText;
+      if (link) {
+        linkHref = link.getAttribute('href');
+        rawLabel = link.textContent.trim();
+      } else if (escapedAnchor) {
+        [, linkHref, rawLabel] = escapedAnchor;
+      }
+      const label = rawLabel.replace(/<\/?a\b[^>]*>/gi, '').trim();
+      // Treat href="#" (or empty) as a non-navigating megamenu trigger.
+      const href = linkHref && linkHref !== '#' ? linkHref : '#';
       const columns = collectPanelColumns(el);
       const li = document.createElement('li');
       li.className = 'nav-menu-item';
