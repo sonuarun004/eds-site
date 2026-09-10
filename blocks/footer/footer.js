@@ -14,6 +14,19 @@ async function fetchFooterDocument() {
 }
 
 /**
+ * Read the top-level section divs from a fetched fragment. Locally (aem up)
+ * the fragment keeps its <main> wrapper; when published to DA/EDS it is served
+ * as bare top-level <div>s (under <body>). Support both.
+ * @param {Document} doc
+ * @returns {Element[]}
+ */
+function readSections(doc) {
+  const scoped = [...doc.querySelectorAll('main > div')];
+  if (scoped.length) return scoped;
+  return [...doc.body.children].filter((el) => el.tagName === 'DIV');
+}
+
+/**
  * Rewrite relative image paths (images/...) to the fragment's /content location.
  * @param {Element} root
  */
@@ -97,7 +110,7 @@ export default async function decorate(block) {
   block.textContent = '';
   if (!doc) return;
 
-  const sections = [...doc.querySelectorAll('main > div')];
+  const sections = readSections(doc);
   const footer = document.createElement('div');
   footer.className = 'footer-inner';
 

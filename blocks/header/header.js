@@ -17,6 +17,19 @@ async function fetchNavDocument() {
 }
 
 /**
+ * Read the top-level section divs from a fetched fragment. Locally (aem up)
+ * the fragment keeps its <main> wrapper; when published to DA/EDS it is served
+ * as bare top-level <div>s (DOMParser puts them under <body>). Support both.
+ * @param {Document} doc
+ * @returns {Element[]}
+ */
+function readSections(doc) {
+  const scoped = [...doc.querySelectorAll('main > div')];
+  if (scoped.length) return scoped;
+  return [...doc.body.children].filter((el) => el.tagName === 'DIV');
+}
+
+/**
  * Collect the heading/list groups that make up one megamenu panel.
  * Starting after an <h2> menu label, gather each <h3>+<ul> pair until the
  * next <h2>.
@@ -282,7 +295,7 @@ export default async function decorate(block) {
   block.textContent = '';
   if (!doc) return;
 
-  const sections = [...doc.querySelectorAll('main > div')];
+  const sections = readSections(doc);
   const utilitySection = sections[0];
   const mainSection = sections[1];
 
